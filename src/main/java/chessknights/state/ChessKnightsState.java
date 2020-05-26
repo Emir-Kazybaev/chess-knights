@@ -84,6 +84,13 @@ public class ChessKnightsState {
     public void moveTo(int board[][],int row,int col,int dx,int dy,int player){
         board[dx][dy]=player;
         board[row][col]=3;
+        String color;
+        if (player == 1){
+            color = "White";
+        }else{
+            color = "Black";
+        }
+        log.info("{} Knight at ({},{}) moved to ({},{})",color,row,col,dx,dy);
     }
 
     public void display(int [][]a){
@@ -96,7 +103,7 @@ public class ChessKnightsState {
     }
 
     public void chessKnightsGame(){
-//        log.info("Starting application...");
+//        log.info("Starting application from Game method...");
         int player = 1;
         int dx;
         int dy;
@@ -135,9 +142,9 @@ public class ChessKnightsState {
             display(board);
         }
         if (player==1){
-            System.out.println("Player 2 won");
+            log.info("Player 2 won");
         }else
-            System.out.println("Player 1 won");
+            log.info("Player 1 won");
     }
 
     public static void main(String[] args) {
