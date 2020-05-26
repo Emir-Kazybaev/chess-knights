@@ -3,10 +3,12 @@ package chessknights.state;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
 
 @Data
+@Slf4j
 public class ChessKnightsState {
     @Setter(AccessLevel.NONE)
     private int X[] = { 2, 1, -1, -2, -2, -1, 1, 2};
@@ -93,7 +95,8 @@ public class ChessKnightsState {
         }
     }
 
-    private void chessKnightsGame(){
+    public void chessKnightsGame(){
+//        log.info("Starting application...");
         int player = 1;
         int dx;
         int dy;
@@ -106,6 +109,7 @@ public class ChessKnightsState {
         while (true){
             String turn = (player == 1? "White": "Black");
             System.out.println(turn + " Knight Turn");
+//            log.info("{} Knight Turn",turn);
             Scanner scanner = new Scanner(System.in);
             dx = scanner.nextInt();
             dy = scanner.nextInt();
