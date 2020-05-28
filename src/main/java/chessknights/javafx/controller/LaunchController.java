@@ -30,19 +30,18 @@ public class LaunchController {
     private Label errorLabel;
 
     public void startAction(ActionEvent actionEvent) throws IOException {
-        log.info("game started");
         if (firstPlayerNameTextField.getText().isEmpty() || secondPlayerNameTextField.getText().isEmpty()) {
             errorLabel.setText("Enter names for both players!");
         } else {
             fxmlLoader.setLocation(getClass().getResource("/fxml/game.fxml"));
             Parent root = fxmlLoader.load();
-//            fxmlLoader.<GameController>getController().setPlayerName(firstPlayerNameTextField.getText());
-//            fxmlLoader.<GameController>getController().setPlayerName(secondPlayerNameTextField.getText());
+            fxmlLoader.<GameController>getController().setFirstPlayerName(firstPlayerNameTextField.getText());
+            fxmlLoader.<GameController>getController().setSecondPlayerName(secondPlayerNameTextField.getText());
+            log.info("The players name is set to {}, loading game scene", firstPlayerNameTextField.getText());
+            log.info("The players name is set to {}, loading game scene", secondPlayerNameTextField.getText());
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-            log.info("The players name is set to {}, loading game scene", firstPlayerNameTextField.getText());
-            log.info("The players name is set to {}, loading game scene", secondPlayerNameTextField.getText());
         }
     }
 
