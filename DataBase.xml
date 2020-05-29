@@ -2,10 +2,18 @@
 <records>
     <record>
         <player>Emir</player>
-        <totalWins>5</totalWins>
+        <totalWins>6</totalWins>
     </record>
     <record>
-        <player>Rime</player>
+        <player>world</player>
+        <totalWins>1</totalWins>
+    </record>
+    <record>
+        <player>ONE</player>
+        <totalWins>1</totalWins>
+    </record>
+    <record>
+        <player>Emir</player>
         <totalWins>1</totalWins>
     </record>
 </records>

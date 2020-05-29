@@ -23,36 +23,33 @@ public class GameResult1 {
 
 
     public GameResult1() {
-
         try {
             this.recordList = JAXBHelper.fromXML(RecordList.class, new FileInputStream("DataBase.xml"));
         }catch (FileNotFoundException | JAXBException ex){
             log.error(ex.toString());
             this.recordList.setRecords(new ArrayList<>());
         }
-
     }
 
     public void createRecords(String player) {
         List<Record> records = new ArrayList<>(this.recordList.getRecords());
         List<Record> result = new ArrayList<>(records);
-
+        System.out.println(records);
         System.out.println(player);
-
         boolean isAdded;
-
         for (Record record: records) {
             isAdded = false;
             System.out.println(record);
-
-            if (result.size() == 0) {
-                result.add(new Record(player, 1));
+            if (records.size() == 0) {
+                records.add(new Record(player, 1));
                 isAdded = true;
+                System.out.println("NOT EMPTY");
+                System.out.println(records.size());
             }
             else {
-                for (int i = 0; i < result.size(); i++)
-                    if (result.get(i).getPlayer().equals(player)) {
-                        result.get(i).setTotalWins(result.get(i).getTotalWins() + 1);
+                for (int i = 0; i < records.size(); i++)
+                    if (record.getPlayer().equals(player)) {
+                        records.get(i).setTotalWins(result.get(i).getTotalWins() + 1);
                         isAdded = true;
                         System.out.println("Old Player");
                         break;
@@ -60,15 +57,16 @@ public class GameResult1 {
             }
             if (!isAdded) {
                 System.out.println("New Player");
-                result.add(new Record(player, 1));
+                records.add(new Record(player, 1));
+                break;
             }
         }
 
-        System.out.println(result);
+//        System.out.println(result);
 
-        Collections.sort(result);
+        Collections.sort(records);
 
-        this.recordList.setRecords(result);
+        this.recordList.setRecords(records);
 
         System.out.println("===========================" + recordList);
 
