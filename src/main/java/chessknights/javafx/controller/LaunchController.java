@@ -33,15 +33,14 @@ public class LaunchController {
         if (firstPlayerNameTextField.getText().isEmpty() || secondPlayerNameTextField.getText().isEmpty()) {
             errorLabel.setText("Enter names for both players!");
         } else {
-            fxmlLoader.setLocation(getClass().getResource("/fxml/game.fxml"));
+            fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
             Parent root = fxmlLoader.load();
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             fxmlLoader.<GameController>getController().setFirstPlayerName(firstPlayerNameTextField.getText());
             fxmlLoader.<GameController>getController().setSecondPlayerName(secondPlayerNameTextField.getText());
-            log.info("The players name is set to {}, loading game scene", firstPlayerNameTextField.getText());
-            log.info("The players name is set to {}, loading game scene", secondPlayerNameTextField.getText());
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
+            log.info("The players name are set to {} and {}, loading game scene", firstPlayerNameTextField.getText(),secondPlayerNameTextField.getText());
         }
     }
 

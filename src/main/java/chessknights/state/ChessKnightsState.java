@@ -14,19 +14,44 @@ import java.util.Scanner;
 @Data
 @Slf4j
 public class ChessKnightsState implements Cloneable{
+    /**
+     * The arrays help to represent possible moves of a Knight in chess.
+     */
     @Setter(AccessLevel.NONE)
     private int X[] = { 2, 1, -1, -2, -2, -1, 1, 2};
+
+    /**
+     * The arrays help to represent possible moves of a Knight in chess.
+     */
     @Setter(AccessLevel.NONE)
     private int Y[] = { 1, 2, 2, 1, -1, -2, -2, -1};
-    @Setter(AccessLevel.NONE)
-    private int whiteRow;
-    @Setter(AccessLevel.NONE)
-    private int whiteCol;
-    @Setter(AccessLevel.NONE)
-    private int blackRow;
-    @Setter(AccessLevel.NONE)
-    private int blackCol;
 
+    /**
+     * The row of the White Knight.
+     */
+    @Setter(AccessLevel.NONE)
+    private int whiteRow = 7;
+
+    /**
+     * The column of the White Knight.
+     */
+    @Setter(AccessLevel.NONE)
+    private int whiteCol = 0;
+
+    /**
+     * The row of the Black Knight.
+     */
+    @Setter(AccessLevel.NONE)
+    private int blackRow = 0;
+    /**
+     * The column of the Black Knight.
+     */
+    @Setter(AccessLevel.NONE)
+    private int blackCol = 7;
+
+    /**
+     * The array representing the initial configuration of the tray.
+     */
     public static final int INITIAL[][]  = {
             {0,0,0,0,0,0,0,2},
             {0,0,0,0,0,0,0,0},
@@ -104,7 +129,7 @@ public class ChessKnightsState implements Cloneable{
 
     /**
      * Checks whether the game is finished.
-     *
+     * @param player provide a number which represents a player.
      * @return {@code true} if player don't have any moves left, {@code false} otherwise
      */
     public boolean isFinished(int player){
@@ -118,9 +143,11 @@ public class ChessKnightsState implements Cloneable{
     /**
      * Calculates possible moves from direction received.
      * Used to help to find endgame condition
-     *
+     * @param row row of a Knight.
+     * @param col column of a Knight.
      * @return {@code 0} if no moves left, {@code 1-8} depends on possible moves left.
      */
+
     public int movesLeft(int row, int col)
     {
         int count = 0;
@@ -138,6 +165,7 @@ public class ChessKnightsState implements Cloneable{
      *
      * @param dx the row of destination point.
      * @param dy the column of destination point.
+     * @param player provide a number which represents a player.
      * @return {@code true} if legal and coordinates are reachable,{code false} otherwise.
      */
     public boolean isValidMove(int dx,int dy,int player) {
@@ -252,7 +280,6 @@ public class ChessKnightsState implements Cloneable{
         }else
             log.info("{} won the match",player1);
     }
-
 
 
     public static void main(String[] args) {

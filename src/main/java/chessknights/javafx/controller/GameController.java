@@ -1,5 +1,7 @@
 package chessknights.javafx.controller;
 
+import chessknights.results.GameResult;
+import chessknights.results.GameResultDao;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -39,7 +41,7 @@ public class GameController {
     private FXMLLoader fxmlLoader;
 
     @Inject
-//    private GameResultDao gameResultDao;
+    private GameResultDao gameResultDao;
 
     private String firstPlayerName;
     private String secondPlayerName;
@@ -51,6 +53,9 @@ public class GameController {
 
     @FXML
     private Label messageLabel;
+
+    @FXML
+    private Label playerTurnLabel;
 
     @FXML
     private GridPane gameGrid;
@@ -69,6 +74,8 @@ public class GameController {
     @FXML
     private Button giveUpButton;
 
+    int player = 1;
+
     private BooleanProperty gameOver = new SimpleBooleanProperty();
 
     public void setFirstPlayerName(String firstPlayerName) {
@@ -79,19 +86,22 @@ public class GameController {
         this.secondPlayerName = secondPlayerName;
     }
 
+    private ImageView whiteKnight;
+    private ImageView blackKnight;
 
     @FXML
     public void initialize() {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
         knightImages = List.of(
-                new Image(getClass().getResource("/images/blackKnight.png").toExternalForm()),
-                new Image(getClass().getResource("/images/whiteKnight.png").toExternalForm())
+                new Image(getClass().getResource("/images/whiteKnight.png").toExternalForm()),
+                new Image(getClass().getResource("/images/blackKnight.png").toExternalForm())
         );
         stepsLabel.textProperty().bind(steps.asString());
         gameOver.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 log.info("Game is over");
                 log.debug("Saving result to database...");
-//                gameResultDao.persist(createGameResult());
+                gameResultDao.persist(createGameResult());
                 stopWatchTimeline.stop();
             }
         });
@@ -99,35 +109,49 @@ public class GameController {
     }
 
     private void resetGame() {
+        gameGrid.getChildren().remove(whiteKnight);
+        gameGrid.getChildren().remove(blackKnight);
         gameState = new ChessKnightsState(ChessKnightsState.INITIAL);
         steps.set(0);
         startTime = Instant.now();
         gameOver.setValue(false);
+        player = 1;
+        whiteKnight = new ImageView(knightImages.get(0));
+        whiteKnight.setFitHeight(60);
+        whiteKnight.setFitWidth(60);
+        blackKnight = new ImageView(knightImages.get(1));
+        blackKnight.setFitHeight(60);
+        blackKnight.setFitWidth(60);
+        gameGrid.add(whiteKnight,gameState.getWhiteCol(),gameState.getWhiteRow());
+        gameGrid.add(blackKnight,gameState.getBlackCol(),gameState.getBlackRow());
         displayGameState();
         createStopWatch();
-        Platform.runLater(() -> messageLabel.setText(firstPlayerName + " VS " + secondPlayerName));
+        Platform.runLater(() -> playerTurnLabel.setText(firstPlayerName));
+        Platform.runLater(() -> messageLabel.setText(firstPlayerName + " vs " + secondPlayerName));
     }
 
     private void displayGameState() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                ImageView view = (ImageView) gameGrid.getChildren().get(i * 8 + j);
-                if (view.getImage() != null) {
-                    log.trace("Image({}, {}) = {}", i, j, view.getImage().getUrl());
-                }
-                view.setImage(knightImages.get(gameState.getTray()[i][j].getValue()));
-            }
-        }
+        GridPane.setConstraints(whiteKnight,gameState.getWhiteCol(),gameState.getWhiteRow());
+        GridPane.setConstraints(blackKnight,gameState.getBlackCol(),gameState.getBlackRow());
+        System.out.println(gameState);
     }
 
     public void handleClickToMove(MouseEvent mouseEvent) {
-        int player = 1;
+        System.out.println("handling CLick");
         int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
         int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
-        log.debug("Cube ({}, {}) is pressed", row, col);
+        System.out.println("row = " + row + " col = " + col);
+        log.debug("Cell ({}, {}) is pressed", row, col);
         if (! gameState.isFinished(player) && gameState.isValidMove(row, col,player)) {
             steps.set(steps.get() + 1);
             gameState.moveTo(row, col,player);
+            if (player == 1){
+                player = 2;
+                playerTurnLabel.setText(secondPlayerName);
+            }else{
+                player = 1;
+                playerTurnLabel.setText(firstPlayerName);
+            }
             if (gameState.isFinished(player)) {
                 gameOver.setValue(true);
                 playerName = (player == 1? firstPlayerName: secondPlayerName);
@@ -136,11 +160,6 @@ public class GameController {
                 resetButton.setDisable(true);
                 giveUpButton.setText("Finish");
             }
-        }
-        if (player == 1){
-            player = 2;
-        }else{
-            player = 1;
         }
         displayGameState();
     }
@@ -160,22 +179,22 @@ public class GameController {
         }
         gameOver.setValue(true);
         log.info("Loading high scores scene...");
-//        fxmlLoader.setLocation(getClass().getResource("/fxml/highscores.fxml"));
-//        Parent root = fxmlLoader.load();
-//        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-//        stage.setScene(new Scene(root));
-//        stage.show();
+        fxmlLoader.setLocation(getClass().getResource("/fxml/highscores.fxml"));
+        Parent root = fxmlLoader.load();
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
-//
-//    private GameResult createGameResult() {
-//        GameResult result = GameResult.builder()
-//                .player(playerName)
-//                .solved(gameState.isSolved())
-//                .duration(Duration.between(startTime, Instant.now()))
-//                .steps(steps.get())
-//                .build();
-//        return result;
-//    }
+
+    private GameResult createGameResult() {
+        GameResult result = GameResult.builder()
+                .player(playerName)
+                .solved(gameState.isFinished(player))
+                .duration(Duration.between(startTime, Instant.now()))
+                .steps(steps.get())
+                .build();
+        return result;
+    }
 
     private void createStopWatch() {
         stopWatchTimeline = new Timeline(new KeyFrame(javafx.util.Duration.ZERO, e -> {
