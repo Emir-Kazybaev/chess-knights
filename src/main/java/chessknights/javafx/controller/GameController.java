@@ -1,7 +1,7 @@
 package chessknights.javafx.controller;
 
-import chessknights.results.GameResult;
 import chessknights.results.GameResultDao;
+import chessknights.resultsJAXB.GameResult1;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -29,10 +29,9 @@ import chessknights.state.ChessKnightsState;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+
 
 @Slf4j
 public class GameController {
@@ -104,7 +103,7 @@ public class GameController {
             if (newValue) {
                 log.info("Game is over");
                 log.debug("Saving result to database...");
-                gameResultDao.persist(createGameResult());
+                createGameResult();
                 stopWatchTimeline.stop();
             }
         });
@@ -174,21 +173,27 @@ public class GameController {
         }
         gameOver.setValue(true);
         log.info("Loading high scores scene...");
-        fxmlLoader.setLocation(getClass().getResource("/fxml/highscores.fxml"));
-        Parent root = fxmlLoader.load();
+//        fxmlLoader.setLocation();
+//        Parent root = fxmlLoader.load();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/highscores.fxml"));
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
     }
 
-    private GameResult createGameResult() {
-        GameResult result = GameResult.builder()
-                .player(playerName)
-                .solved(gameState.isFinished(1) || gameState.isFinished(2)? true : false)
-                .duration(Duration.between(startTime, Instant.now()))
-                .steps(steps.get())
-                .build();
-        return result;
+    private void createGameResult() {
+
+        if(gameState.isFinished(1) || gameState.isFinished(2))
+            new GameResult1().createRecords(player == 1? secondPlayerName: firstPlayerName);
+
+
+//
+//        GameResult result = GameResult.builder()
+//                .player(player == 1 ? secondPlayerName: firstPlayerName)
+//                .solved(gameState.isFinished(1) || gameState.isFinished(2)? true : false)
+//                .duration(Duration.between(startTime, Instant.now()))
+//                .steps(steps.get())
+//                .build();
     }
 
     private void createStopWatch() {

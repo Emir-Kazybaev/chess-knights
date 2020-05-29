@@ -9,7 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import util.guice.*;
+import util.guice.PersistenceModule;
 
 import javax.inject.Inject;
 import java.util.List;

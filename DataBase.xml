@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<records>
+    <record>
+        <player>Emir</player>
+        <totalWins>5</totalWins>
+    </record>
+    <record>
+        <player>Rime</player>
+        <totalWins>1</totalWins>
+    </record>
+</records>

@@ -18,7 +18,7 @@ import java.io.IOException;
 public class LaunchController {
 
     @Inject
-    private FXMLLoader fxmlLoader;
+    private FXMLLoader fxmlLoader = new FXMLLoader();
 
     @FXML
     private TextField firstPlayerNameTextField;
@@ -32,6 +32,8 @@ public class LaunchController {
     public void startAction(ActionEvent actionEvent) throws IOException {
         if (firstPlayerNameTextField.getText().isEmpty() || secondPlayerNameTextField.getText().isEmpty()) {
             errorLabel.setText("Enter both names!");
+        }else if(firstPlayerNameTextField.getText().equals(secondPlayerNameTextField.getText())){
+            errorLabel.setText("Enter different names!");
         }else{
             fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
             Parent root = fxmlLoader.load();
