@@ -17,6 +17,9 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RecordList {
 
+    /**
+     * List to store values of record class.
+     */
     @XmlElement(name = "record")
     private List<Record> records;
 

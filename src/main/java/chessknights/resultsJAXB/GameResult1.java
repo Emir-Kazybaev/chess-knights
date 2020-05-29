@@ -22,6 +22,9 @@ public class GameResult1 {
     private RecordList recordList = new RecordList();
 
 
+    /**
+     * Checks if DataBase records already exists, if not set a file which keeps the players records to be empty.
+     */
     public GameResult1() {
         try {
             this.recordList = JAXBHelper.fromXML(RecordList.class, new FileInputStream("DataBase.xml"));
@@ -31,11 +34,17 @@ public class GameResult1 {
         }
     }
 
+    /**
+     *
+     * @param player obtain nickname of a player who won the match,returned from GameController class.
+     * If database is empty - adding a new player to database with 1 victory.
+     * If database contain players then checks if if the player who won the match among the list,
+     *               if player is there, increase value of wins by one.
+     * Otherwise, adding a new player to database with 1 victory.
+     */
     public void createRecords(String player) {
         List<Record> records = new ArrayList<>(this.recordList.getRecords());
         List<Record> result = new ArrayList<>(records);
-        System.out.println(records);
-        System.out.println(player);
         boolean isAdded;
         for (Record record: records) {
             isAdded = false;
@@ -43,33 +52,25 @@ public class GameResult1 {
             if (records.size() == 0) {
                 records.add(new Record(player, 1));
                 isAdded = true;
-                System.out.println("NOT EMPTY");
-                System.out.println(records.size());
+                log.info("Added {} to database with one win",player);
             }
             else {
                 for (int i = 0; i < records.size(); i++)
                     if (record.getPlayer().equals(player)) {
                         records.get(i).setTotalWins(result.get(i).getTotalWins() + 1);
                         isAdded = true;
-                        System.out.println("Old Player");
+                        log.info("Added one to wins of {}",player);
                         break;
                     }
             }
             if (!isAdded) {
-                System.out.println("New Player");
                 records.add(new Record(player, 1));
+                log.info("Added {} to database with one win",player);
                 break;
             }
         }
-
-//        System.out.println(result);
-
         Collections.sort(records);
-
         this.recordList.setRecords(records);
-
-        System.out.println("===========================" + recordList);
-
         try {
             JAXBHelper.toXML(this.recordList, new FileOutputStream("DataBase.xml"));
         } catch (JAXBException | FileNotFoundException e) {

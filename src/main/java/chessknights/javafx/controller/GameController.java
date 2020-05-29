@@ -1,6 +1,5 @@
 package chessknights.javafx.controller;
 
-import chessknights.results.GameResultDao;
 import chessknights.resultsJAXB.GameResult1;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -27,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import chessknights.state.ChessKnightsState;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -36,11 +34,6 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 public class GameController {
 
-    @Inject
-    private FXMLLoader fxmlLoader;
-
-    @Inject
-    private GameResultDao gameResultDao;
 
     private String firstPlayerName;
     private String secondPlayerName;
@@ -173,8 +166,6 @@ public class GameController {
         }
         gameOver.setValue(true);
         log.info("Loading high scores scene...");
-//        fxmlLoader.setLocation();
-//        Parent root = fxmlLoader.load();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/highscores.fxml"));
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
@@ -182,18 +173,8 @@ public class GameController {
     }
 
     private void createGameResult() {
-
         if(gameState.isFinished(1) || gameState.isFinished(2))
             new GameResult1().createRecords(player == 1? secondPlayerName: firstPlayerName);
-
-
-//
-//        GameResult result = GameResult.builder()
-//                .player(player == 1 ? secondPlayerName: firstPlayerName)
-//                .solved(gameState.isFinished(1) || gameState.isFinished(2)? true : false)
-//                .duration(Duration.between(startTime, Instant.now()))
-//                .steps(steps.get())
-//                .build();
     }
 
     private void createStopWatch() {
