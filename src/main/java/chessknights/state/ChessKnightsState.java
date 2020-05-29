@@ -15,13 +15,13 @@ import java.util.Scanner;
 @Slf4j
 public class ChessKnightsState implements Cloneable{
     /**
-     * The arrays help to represent possible moves of a Knight in chess.
+     * This array helps to represent possible moves of a Knight in chess.
      */
     @Setter(AccessLevel.NONE)
     private int X[] = { 2, 1, -1, -2, -2, -1, 1, 2};
 
     /**
-     * The arrays help to represent possible moves of a Knight in chess.
+     * This array helps to represent possible moves of a Knight in chess.
      */
     @Setter(AccessLevel.NONE)
     private int Y[] = { 1, 2, 2, 1, -1, -2, -2, -1};

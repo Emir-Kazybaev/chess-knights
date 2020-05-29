@@ -34,7 +34,8 @@ public class ChessKnightsApplication extends Application {
     public void start(Stage primaryStage) throws Exception{
         log.info("Starting application...");
         context.init();
-        Parent root = FXMLLoader.load(ChessKnightsApplication.class.getResource("/fxml/launch.fxml"));
+        fxmlLoader.setLocation(getClass().getResource("/fxml/launch.fxml"));
+        Parent root = fxmlLoader.load();
         primaryStage.setTitle("Chess Knights");
         primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));

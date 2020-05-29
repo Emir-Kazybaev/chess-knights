@@ -49,7 +49,10 @@ public class GameController {
     private ChessKnightsState gameState;
     private IntegerProperty steps = new SimpleIntegerProperty();
     private Instant startTime;
-    private List<Image> knightImages;
+    private int player = 1;
+    private ImageView whiteKnight;
+    private ImageView blackKnight;
+    private ImageView redCross;
 
     @FXML
     private Label messageLabel;
@@ -74,8 +77,6 @@ public class GameController {
     @FXML
     private Button giveUpButton;
 
-    int player = 1;
-
     private BooleanProperty gameOver = new SimpleBooleanProperty();
 
     public void setFirstPlayerName(String firstPlayerName) {
@@ -86,16 +87,23 @@ public class GameController {
         this.secondPlayerName = secondPlayerName;
     }
 
-    private ImageView whiteKnight;
-    private ImageView blackKnight;
+    public void setPlayerName(String firstPlayerName){
+        this.playerName = firstPlayerName;
+    }
+
 
     @FXML
     public void initialize() {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
-        knightImages = List.of(
-                new Image(getClass().getResource("/images/whiteKnight.png").toExternalForm()),
-                new Image(getClass().getResource("/images/blackKnight.png").toExternalForm())
-        );
+        System.out.println("INITIALIZING........");
+        whiteKnight = new ImageView(new Image(getClass().getResource("/images/whiteKnight.png").toExternalForm()));
+        blackKnight = new ImageView(new Image(getClass().getResource("/images/blackKnight.png").toExternalForm()));
+//        redCross = new ImageView(new Image(getClass().getResource("/images/Cross.png").toExternalForm()));
+        whiteKnight.setFitHeight(60);
+        whiteKnight.setFitWidth(60);
+        blackKnight.setFitHeight(60);
+        blackKnight.setFitWidth(60);
+//        redCross.setFitWidth(60);
+//        redCross.setFitHeight(60);
         stepsLabel.textProperty().bind(steps.asString());
         gameOver.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -116,18 +124,14 @@ public class GameController {
         startTime = Instant.now();
         gameOver.setValue(false);
         player = 1;
-        whiteKnight = new ImageView(knightImages.get(0));
-        whiteKnight.setFitHeight(60);
-        whiteKnight.setFitWidth(60);
-        blackKnight = new ImageView(knightImages.get(1));
-        blackKnight.setFitHeight(60);
-        blackKnight.setFitWidth(60);
         gameGrid.add(whiteKnight,gameState.getWhiteCol(),gameState.getWhiteRow());
         gameGrid.add(blackKnight,gameState.getBlackCol(),gameState.getBlackRow());
         displayGameState();
         createStopWatch();
         Platform.runLater(() -> playerTurnLabel.setText(firstPlayerName));
         Platform.runLater(() -> messageLabel.setText(firstPlayerName + " vs " + secondPlayerName));
+//        gameGrid.setStyle("-fx-background-color: #004a9e");
+//        gameGrid.getChildren().set(1,redCross);
     }
 
     private void displayGameState() {
@@ -137,26 +141,26 @@ public class GameController {
     }
 
     public void handleClickToMove(MouseEvent mouseEvent) {
-        System.out.println("handling CLick");
         int row = GridPane.getRowIndex((Node) mouseEvent.getSource());
         int col = GridPane.getColumnIndex((Node) mouseEvent.getSource());
-        System.out.println("row = " + row + " col = " + col);
         log.debug("Cell ({}, {}) is pressed", row, col);
         if (! gameState.isFinished(player) && gameState.isValidMove(row, col,player)) {
             steps.set(steps.get() + 1);
             gameState.moveTo(row, col,player);
             if (player == 1){
                 player = 2;
+//                gameGrid.add(redCross,gameState.getWhiteCol(),gameState.getWhiteRow());
                 playerTurnLabel.setText(secondPlayerName);
             }else{
                 player = 1;
+//                gameGrid.add(redCross,gameState.getBlackCol(),gameState.getBlackRow());
                 playerTurnLabel.setText(firstPlayerName);
             }
             if (gameState.isFinished(player)) {
                 gameOver.setValue(true);
-                playerName = (player == 1? firstPlayerName: secondPlayerName);
+                setPlayerName((player == 1? secondPlayerName: firstPlayerName));
                 log.info("Player {} won the game in {} steps", playerName, steps.get());
-                messageLabel.setText("Congratulations, " + playerName + "!");
+                messageLabel.setText(playerName + " won the match!");
                 resetButton.setDisable(true);
                 giveUpButton.setText("Finish");
             }
@@ -165,6 +169,7 @@ public class GameController {
     }
 
     public void handleResetButton(ActionEvent actionEvent)  {
+        System.out.println("handleResetButton");
         log.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
         log.info("Resetting game...");
         stopWatchTimeline.stop();
@@ -187,9 +192,10 @@ public class GameController {
     }
 
     private GameResult createGameResult() {
+        System.out.println("Player is " + player + "isFinished? " + (gameState.isFinished(1) || gameState.isFinished(2)? true : false) + " duration is " + (Duration.between(startTime, Instant.now())) + "steps are " + steps);
         GameResult result = GameResult.builder()
                 .player(playerName)
-                .solved(gameState.isFinished(player))
+                .solved(gameState.isFinished(1) || gameState.isFinished(2)? true : false)
                 .duration(Duration.between(startTime, Instant.now()))
                 .steps(steps.get())
                 .build();
