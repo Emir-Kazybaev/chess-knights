@@ -243,47 +243,5 @@ public class ChessKnightsState implements Cloneable{
         }
         return sb.toString();
     }
-
-    /**
-     * Created to test game logic.
-     * @param state
-     */
-    private void chessKnightsGame(ChessKnightsState state){
-        Scanner scanner = new Scanner(System.in);
-        String player1 = scanner.next();
-        String player2 = scanner.next();
-        int player = 1;
-        int dx;
-        int dy;
-        System.out.println(state);
-        while (true){
-            if (isFinished(player))
-                break;
-            String turn = (player == 1 ? player1 : player2);
-            log.info("Your turn, {}", turn);
-            dx = scanner.nextInt();
-            dy = scanner.nextInt();
-            while (!isValidMove(dx, dy, player)) {
-                dx = scanner.nextInt();
-                dy = scanner.nextInt();
-            }
-            moveTo(dx, dy, player);
-            System.out.println(state);
-            if (player == 1) {
-                player = 2;
-            } else {
-                player = 1;
-            }
-        }
-        if (player==1){
-            log.info("{} won the match",player2);
-        }else
-            log.info("{} won the match",player1);
-    }
-
-
-    public static void main(String[] args) {
-        ChessKnightsState state = new ChessKnightsState();
-        state.chessKnightsGame(state);
-    }
+    
 }

@@ -31,8 +31,8 @@ public class LaunchController {
 
     public void startAction(ActionEvent actionEvent) throws IOException {
         if (firstPlayerNameTextField.getText().isEmpty() || secondPlayerNameTextField.getText().isEmpty()) {
-            errorLabel.setText("Enter names for both players!");
-        } else {
+            errorLabel.setText("Enter both names!");
+        }else{
             fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
             Parent root = fxmlLoader.load();
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();

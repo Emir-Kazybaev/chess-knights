@@ -52,7 +52,6 @@ public class GameController {
     private int player = 1;
     private ImageView whiteKnight;
     private ImageView blackKnight;
-    private ImageView redCross;
 
     @FXML
     private Label messageLabel;
@@ -94,16 +93,12 @@ public class GameController {
 
     @FXML
     public void initialize() {
-        System.out.println("INITIALIZING........");
         whiteKnight = new ImageView(new Image(getClass().getResource("/images/whiteKnight.png").toExternalForm()));
         blackKnight = new ImageView(new Image(getClass().getResource("/images/blackKnight.png").toExternalForm()));
-//        redCross = new ImageView(new Image(getClass().getResource("/images/Cross.png").toExternalForm()));
         whiteKnight.setFitHeight(60);
         whiteKnight.setFitWidth(60);
         blackKnight.setFitHeight(60);
         blackKnight.setFitWidth(60);
-//        redCross.setFitWidth(60);
-//        redCross.setFitHeight(60);
         stepsLabel.textProperty().bind(steps.asString());
         gameOver.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -130,14 +125,12 @@ public class GameController {
         createStopWatch();
         Platform.runLater(() -> playerTurnLabel.setText(firstPlayerName));
         Platform.runLater(() -> messageLabel.setText(firstPlayerName + " vs " + secondPlayerName));
-//        gameGrid.setStyle("-fx-background-color: #004a9e");
-//        gameGrid.getChildren().set(1,redCross);
     }
 
     private void displayGameState() {
         GridPane.setConstraints(whiteKnight,gameState.getWhiteCol(),gameState.getWhiteRow());
         GridPane.setConstraints(blackKnight,gameState.getBlackCol(),gameState.getBlackRow());
-        System.out.println(gameState);
+//        System.out.println(gameState);
     }
 
     public void handleClickToMove(MouseEvent mouseEvent) {
@@ -149,11 +142,9 @@ public class GameController {
             gameState.moveTo(row, col,player);
             if (player == 1){
                 player = 2;
-//                gameGrid.add(redCross,gameState.getWhiteCol(),gameState.getWhiteRow());
                 playerTurnLabel.setText(secondPlayerName);
             }else{
                 player = 1;
-//                gameGrid.add(redCross,gameState.getBlackCol(),gameState.getBlackRow());
                 playerTurnLabel.setText(firstPlayerName);
             }
             if (gameState.isFinished(player)) {
@@ -169,7 +160,6 @@ public class GameController {
     }
 
     public void handleResetButton(ActionEvent actionEvent)  {
-        System.out.println("handleResetButton");
         log.debug("{} is pressed", ((Button) actionEvent.getSource()).getText());
         log.info("Resetting game...");
         stopWatchTimeline.stop();
@@ -192,7 +182,6 @@ public class GameController {
     }
 
     private GameResult createGameResult() {
-        System.out.println("Player is " + player + "isFinished? " + (gameState.isFinished(1) || gameState.isFinished(2)? true : false) + " duration is " + (Duration.between(startTime, Instant.now())) + "steps are " + steps);
         GameResult result = GameResult.builder()
                 .player(playerName)
                 .solved(gameState.isFinished(1) || gameState.isFinished(2)? true : false)
