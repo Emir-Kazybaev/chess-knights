@@ -36,7 +36,7 @@ public class GameResult1 {
 
     /**
      *
-     * @param player obtain nickname of a player who won the match,returned from GameController class.
+     * @param player obtain nickname as a string of a player who won the match.
      * If database is empty - adding a new player to database with 1 victory.
      * If database contain players then checks if if the player who won the match among the list,
      *               if player is there, increase value of wins by one.
